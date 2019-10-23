@@ -109,13 +109,10 @@
           <h2>More...</h2>
           <ul>
             <li>
-              At its core, GraphQL enables declarative data fetching where a
-              client can specify exactly what data it needs from an API
+              It's a declarative data fetching
             </li>
             <li class="fragment fade-in" data-fragment-index="1">
-              Instead of multiple endpoints that return fixed data structures, a
-              GraphQL server only exposes a single endpoint and responds with
-              precisely the data a client asked for.
+              Unlike REST, GraphQL server only exposes a single endpoint.
             </li>
             <li class="fragment fade-in" data-fragment-index="2">
               You can definitely use both at the same time
@@ -126,34 +123,14 @@
           </ul>
         </section>
         <section>
-          <h2>GraphQL is the better REST</h2>
-          <ul>
-            <li>REST and GraphQL are totally different</li>
-            <li class="fragment fade-in" data-fragment-index="1">
-              REST APIs have shown to be too inflexible to keep up with the
-              rapidly changing requirements of the clients that access them.
-            </li>
-            <li class="fragment fade-in" data-fragment-index="2">
-              GraphQL was developed to cope with the need for more flexibility
-              and efficiency! It solves many of the shortcomings and
-              inefficiencies that developers experience when interacting with
-              REST APIs.
-            </li>
-          </ul>
-        </section>
-        <section>
           <h2>Typical Rest API</h2>
-
           <img src="assets/img/rest-api.svg" style="width: 80%" />
         </section>
-
         <section>
           <h2>Common Issues</h2>
-
           <ul>
             <li>
               Over-fetching
-
               <ul class="fragment fade-in" data-fragment-index="1">
                 <li>
                   /products?<span class="qname">field</span>=<span
@@ -169,7 +146,6 @@
             </li>
             <li class="fragment fade-in" data-fragment-index="2">
               Under-fetching
-
               <ul class="fragment fade-in" data-fragment-index="3">
                 <li>
                   /products?<span class="qname">expand</span>=<span
@@ -201,15 +177,8 @@
           <h2>GraphQL Approach</h2>
           <img src="assets/img/graphql-api.svg" style="max-width: 70%" />
         </section>
-        <section>
-          To illustrate the major differences between REST and GraphQL when it
-          comes to fetching data from an API, let’s consider a simple example
-          scenario: In a blogging application, an app needs to display the
-          titles of the posts of a specific user. The same screen also displays
-          the names of the last 3 followers of that user. How would that
-          situation be solved with REST and GraphQL?
-        </section>
         <section class="img">
+          <h2>Data fetching with REST</h2>
           <li>
             <img src="assets/img/rest3.png" style="max-width: 80%" />
           </li>
@@ -222,7 +191,6 @@
         </section>
         <section class="img">
           <h2>Data fetching with GraphQL</h2>
-
           <img src="assets/img/graphql.png" style="max-width: 80%" />
         </section>
         <section>
@@ -400,10 +368,7 @@ subscription ProductEvents {
         <section>
           <h2>Defining a Schema</h2>
           <p class="sm-font">
-            The schema is one of the most important concepts when working with a
-            GraphQL API. It specifies the capabilities of the API and defines
-            how clients can request the data. It is often seen as a contract
-            between the server and client.
+            It is seen as a contract between the server and client.
           </p>
           <p class="sm-font">
             Generally, a schema is simply a collection of GraphQL types.
@@ -527,47 +492,25 @@ type Subscription {
             </div>
           </div>
         </section>
-
-        <section>
-          <h2>Example: JavaScript</h2>
-
-          <pre><code data-trim contenteditable class="javascript">
-var ProductType = new GraphQLObjectType({
-  name: "Product",
-  description: "Commodity available for purchase",
-  fields: {
-    id: {type: GraphQLString},
-    onStock: {
-      type: GraphQLInt,
-      resolve(product) {
-        return product.onStock + 10;
-      }
-    }
-  }
-});
-          </code></pre>
-        </section>
         <section>
           <h2>Client Ecosystems</h2>
           <p class="sm-font">
-            Working with a GraphQL API on the frontend is a great opportunity to
-            develop new abstractions and help implement common functionality on
-            the client-side. Let’s consider some “infrastructure” features that
-            you probably want to have in your app:
+            Some “infrastructure” features that you probably want to have in
+            your app:
           </p>
           <ul>
             <li class="fragment fade-in" data-fragment-index="1">
-              directly sending queries and mutations without constructing HTTP
+              Directly sending queries and mutations without constructing HTTP
               requests
             </li>
             <li class="fragment fade-in" data-fragment-index="2">
-              view-layer integration
+              View-layer integration
             </li>
             <li class="fragment fade-in" data-fragment-index="3">
-              caching
+              Caching
             </li>
             <li class="fragment fade-in" data-fragment-index="4">
-              validating and optimizing queries based on the schema
+              Validating and optimizing queries based on the schema
             </li>
           </ul>
         </section>
@@ -596,7 +539,50 @@ var ProductType = new GraphQLObjectType({
           </ul>
         </section>
         <section>
-          <img src="assets/img/code-sample.png" />
+          <img src="assets/img/client1.png" class="sm-img" />
+        </section>
+        <section>
+          <img src="assets/img/client2.png" class="sm-img" />
+        </section>
+        <section>
+          <p class="sm-font">Server Side snippet</p>
+          <img src="assets/img/code-sample.png" class="sm-img" />
+        </section>
+        <section>
+          <h2>Example: JavaScript</h2>
+
+          <pre><code data-trim contenteditable class="javascript">
+  var ProductType = new GraphQLObjectType({
+    name: "Product",
+    description: "Commodity available for purchase",
+    fields: {
+      id: {type: GraphQLString},
+      onStock: {
+        type: GraphQLInt,
+        resolve(product) {
+          return product.onStock + 10;
+        }
+      }
+    }
+  });
+            </code></pre>
+        </section>
+        <section>
+          <h2>Disadvanatges</h2>
+          <ul>
+            <li class="fragment fade-in" data-fragment-index="1">
+              Queries always return a HTTP status code of 200
+            </li>
+            <li class="fragment fade-in" data-fragment-index="2">
+              Lack of built-in caching support
+            </li>
+            <li class="fragment fade-in" data-fragment-index="3">
+              Query Complexity
+            </li>
+            <li class="fragment fade-in" data-fragment-index="4">
+              Query depths
+            </li>
+          </ul>
         </section>
         <section>
           <h2>Security</h2>

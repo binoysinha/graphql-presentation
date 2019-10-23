@@ -168,3 +168,11 @@ iframe.graphiql {
 .reveal .sm-font {
   font-size: 20px;
 }
+
+.first-slide {
+  background: #8b2e17 !important;
+}
+
+.sm-img {
+  width: 60%;
+}
