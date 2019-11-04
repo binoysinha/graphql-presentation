@@ -166,7 +166,7 @@ iframe.graphiql {
 }
 
 .reveal .sm-font {
-  font-size: 20px;
+  font-size: 48px;
 }
 
 .first-slide {
@@ -174,5 +174,5 @@ iframe.graphiql {
 }
 
 .sm-img {
-  width: 60%;
+  width: 80%;
 }

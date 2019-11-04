@@ -209,17 +209,15 @@
               Realtime Updates with Subscriptions
             </li>
             <li class="fragment fade-in" data-fragment-index="4">
+              Resolvers implement the API
+            </li>
+            <li class="fragment fade-in" data-fragment-index="5">
               Defining a Schema
             </li>
           </ul>
         </section>
         <section>
           <h2>Type System</h2>
-          <p class="sm-font">
-            GraphQL has its own type system that’s used to define the schema of
-            an API. The syntax for writing schemas is called Schema Definition
-            Language (SDL).
-          </p>
           <pre
             style="float: left; width: 60%"
           ><code data-trim contenteditable class="javascript">
@@ -308,43 +306,6 @@ query {
 }
           </code></pre>
         </section>
-
-        <section>
-          <h2>Every field Is a Function</h2>
-
-          <pre
-            style="float: left; width: 50%"
-          ><code data-trim contenteditable class="javascript">
-query MyProduct {
-  products {
-    picture(size: 300) {
-      width, height, url
-    }
-  }
-}
-          </code></pre>
-
-          <pre
-            style="float: left; width: 50%"
-            class="fragment fade-in"
-            data-fragment-index="1"
-          ><code data-trim contenteditable class="javascript">
-{
-  "data": {
-    "products": [
-      {
-        "picture": {
-          "width": 300,
-          "height": 300,
-          "url": "http://..."
-        }
-      },
-      ...
-    ]
-  }
-}
-          </code></pre>
-        </section>
         <section>
           <h2>Mutations & Subscriptions</h2>
 
@@ -366,15 +327,81 @@ subscription ProductEvents {
           </code></pre>
         </section>
         <section>
+          <h2>Resolvers</h2>
+          <ul>
+            <li>
+              It is a collection of functions that generate response for a
+              GraphQL query.
+            </li>
+            <li class="fragment fade-in" data-fragment-index="1">
+              It accepts four positional arguments.
+            </li>
+            <li class="fragment fade-in" data-fragment-index="2">
+              fieldName:(root, args, context, info) => { result }
+            </li>
+            <li class="fragment fade-in" data-fragment-index="3">
+              root
+              <ul class="fragment fade-in" data-fragment-index="4">
+                <li>
+                  The object that contains the result returned from the resolver
+                  on the parent field.
+                </li>
+              </ul>
+            </li>
+            <li class="fragment fade-in" data-fragment-index="5">
+              args
+              <ul class="fragment fade-in" data-fragment-index="6">
+                <li>
+                  An object with the arguments passed into the field in the
+                  query.
+                </li>
+              </ul>
+            </li>
+            <li class="fragment fade-in" data-fragment-index="7">
+              context
+              <ul class="fragment fade-in" data-fragment-index="8">
+                <li>
+                  This is an object shared by all resolvers in a particular
+                  query.
+                </li>
+              </ul>
+            </li>
+            <li class="fragment fade-in" data-fragment-index="9">
+              info
+              <ul class="fragment fade-in" data-fragment-index="10">
+                <li>
+                  It contains information about the execution state of the
+                  query, including the field name, path to the field from the
+                  root.
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h2>Resolvers: Code Snippets</h2>
+          <pre><code data-trim contenteditable class="javascript">
+const resolverMap = {
+  Query: {
+    author(obj, args, context, info) {
+      return find(authors, { id: args.id });
+    },
+  },
+  Mutation: {
+    addPosts(author) {
+      return {success: true}
+    },
+  },
+  Author: {
+    posts(author) {
+      return filter(posts, { authorId: author.id });
+    },
+  },
+};
+          </code></pre>
+        </section>
+        <section>
           <h2>Defining a Schema</h2>
-          <p class="sm-font">
-            It is seen as a contract between the server and client.
-          </p>
-          <p class="sm-font">
-            Generally, a schema is simply a collection of GraphQL types.
-            However, when writing the schema for an API, there are some special
-            root types:
-          </p>
           <div>
             <pre
               style="float: left; width: 50%"
@@ -402,9 +429,9 @@ type Subscription {
             </code></pre>
           </div>
         </section>
-        <section>
+        <!-- <section>
           <img src="assets/img/data-requirements.svg" />
-        </section>
+        </section> -->
         <section>
           <h2>Backend Agnostic</h2>
 
@@ -494,10 +521,6 @@ type Subscription {
         </section>
         <section>
           <h2>Client Ecosystems</h2>
-          <p class="sm-font">
-            Some “infrastructure” features that you probably want to have in
-            your app:
-          </p>
           <ul>
             <li class="fragment fade-in" data-fragment-index="1">
               Directly sending queries and mutations without constructing HTTP
@@ -539,33 +562,20 @@ type Subscription {
           </ul>
         </section>
         <section>
+          <p class="sm-font">Client Side: Getting Started</p>
           <img src="assets/img/client1.png" class="sm-img" />
         </section>
         <section>
+          <p class="sm-font">Query Snippet</p>
           <img src="assets/img/client2.png" class="sm-img" />
+        </section>
+        <section>
+          <p class="sm-font">Mutations Snippet</p>
+          <img src="assets/img/client3.png" class="sm-img" />
         </section>
         <section>
           <p class="sm-font">Server Side snippet</p>
           <img src="assets/img/code-sample.png" class="sm-img" />
-        </section>
-        <section>
-          <h2>Example: JavaScript</h2>
-
-          <pre><code data-trim contenteditable class="javascript">
-  var ProductType = new GraphQLObjectType({
-    name: "Product",
-    description: "Commodity available for purchase",
-    fields: {
-      id: {type: GraphQLString},
-      onStock: {
-        type: GraphQLInt,
-        resolve(product) {
-          return product.onStock + 10;
-        }
-      }
-    }
-  });
-            </code></pre>
         </section>
         <section>
           <h2>Disadvanatges</h2>
@@ -624,7 +634,7 @@ type Subscription {
             </li>
           </ul>
         </section>
-        <section>
+        <!-- <section>
           <h2>
             <a
               href="https://graphql-example.herokuapp.com/graphiql"
@@ -632,7 +642,7 @@ type Subscription {
               >GraphiQL</a
             >
           </h2>
-        </section>
+        </section> -->
         <section>
           <h2>
             <a href="http://localhost:3000/" target="_blank">Demo Time</a>
@@ -648,7 +658,20 @@ type Subscription {
                 >http://graphql.org</a
               >
             </li>
-
+            <li>
+              <strong>How to GraphQL:</strong>
+              <a href="https://www.howtographql.com/" target="_blank"
+                >https://www.howtographql.com/</a
+              >
+            </li>
+            <li>
+              <strong>Apollo Client:</strong>
+              <a
+                href="https://www.apollographql.com/docs/react/"
+                target="_blank"
+                >https://www.apollographql.com/docs/</a
+              >
+            </li>
             <li>
               <strong>Zero To GraphQL:</strong>
               <a href="http://bit.ly/zero-to-graphql" target="_blank"

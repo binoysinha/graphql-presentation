@@ -451,6 +451,7 @@ body {
   perspective: 600px;
   -webkit-perspective-origin: 50% 40%;
   perspective-origin: 50% 40%;
+  margin-top: 100px;
 }
 
 .reveal .slides>section {
