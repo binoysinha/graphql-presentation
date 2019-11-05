@@ -221,10 +221,10 @@
           <pre
             style="float: left; width: 60%"
           ><code data-trim contenteditable class="javascript">
-  type Picture {
-    width: Int!
-    height: Int!
-    url: String
+  type Channel {
+    id: ID!
+    name: String
+    messages: [Message]!
   }
             </code></pre>
 
@@ -234,8 +234,8 @@
             data-fragment-index="3"
           ><code data-trim contenteditable class="javascript">
   type Query {
-    product(id: Int!): Product
-    products: [Product]
+    channels: [Channel]
+    channel(id: ID!): Channel
   }
             </code></pre>
 
@@ -244,8 +244,9 @@
             class="fragment fade-in"
             data-fragment-index="1"
           ><code data-trim contenteditable class="javascript">
-  interface Identifiable {
-    id: String!
+  type Mutation {
+    # A mutation to add a new channel to the list of channels
+    addChannel(name: String!): Channel
   }
             </code></pre>
 
@@ -254,11 +255,8 @@
             class="fragment fade-in"
             data-fragment-index="2"
           ><code data-trim contenteditable class="javascript">
-  type Product implements Identifiable {
-    id: String!
-    name: String!
-    description: String
-    picture(size: Int): Picture
+  type Subscription {
+    channelAdded(name: String!): Channel
   }
             </code></pre>
         </section>
@@ -307,22 +305,72 @@ query {
           </code></pre>
         </section>
         <section>
-          <h2>Mutations & Subscriptions</h2>
-
-          <pre><code data-trim contenteditable class="javascript">
-mutation ChangeStaff {
-  changeName(productId: 123, newName: "Cheesecake") {
-    id, version
-  }
-
-  setDescription(productId: 123, description: "Delicious!") {
-    id, version
+          <h2>Mutations</h2>
+          <ul>
+            <li>
+              Three kinds of Mutations
+              <ul>
+                <li class="fragment fade-in" data-fragment-index="1">
+                  Creating new data.
+                </li>
+                <li class="fragment fade-in" data-fragment-index="2">
+                  Updating new data.
+                </li>
+                <li class="fragment fade-in" data-fragment-index="3">
+                  Deleting new data.
+                </li>
+              </ul>
+            </li>
+          </ul>
+          <div>
+            <pre
+              class="fragment fade-in"
+              data-fragment-index="4"
+              style="float: left; width: 50%"
+            ><code data-trim contenteditable class="javascript">
+mutation {
+  createPerson(name: "Bob", age: 36) {
+    name
+    age
   }
 }
+          </code></pre>
 
+            <pre
+              style="float: left; width: 50%"
+              class="fragment fade-in"
+              data-fragment-index="5"
+            ><code data-trim contenteditable class="javascript">
+{
+          "data": {
+            "createPerson": {
+              "name": "Bob",
+              "age": 36
+            }
+          }
+        }
+          </code></pre>
+          </div>
+        </section>
+        <section>
+          <h2>Subscriptions</h2>
+          <ul>
+            <li>
+              It represent a stream of data sent over to the client.
+            </li>
+            <li class="fragment fade-in" data-fragment-index="1">
+              Have same syntax as queries and mutations
+            </li>
+            <li class="fragment fade-in" data-fragment-index="2">
+              Similar to WebSocket, long polling, sse events in REST world
+            </li>
+          </ul>
+          <pre
+            class="fragment fade-in"
+            data-fragment-index="3"
+          ><code data-trim contenteditable class="javascript">
 subscription ProductEvents {
-  nameChanged(productId: 123) { name }
-  productDeleted { id }
+  channelAdded(name: 'Sony') { channel }
 }
           </code></pre>
         </section>
@@ -334,10 +382,10 @@ subscription ProductEvents {
               GraphQL query.
             </li>
             <li class="fragment fade-in" data-fragment-index="1">
-              It accepts four positional arguments.
+              fieldName:(root, args, context, info) => { result }
             </li>
             <li class="fragment fade-in" data-fragment-index="2">
-              fieldName:(root, args, context, info) => { result }
+              It accepts four positional arguments.
             </li>
             <li class="fragment fade-in" data-fragment-index="3">
               root
@@ -381,22 +429,30 @@ subscription ProductEvents {
         <section>
           <h2>Resolvers: Code Snippets</h2>
           <pre><code data-trim contenteditable class="javascript">
-const resolverMap = {
+export const resolvers = {
   Query: {
-    author(obj, args, context, info) {
-      return find(authors, { id: args.id });
+    channels: () => {
+      return channels;
+    },
+    channel: (root, { id }) => {
+      return channels.find(channel => channel.id == id);
     },
   },
   Mutation: {
-    addPosts(author) {
-      return {success: true}
+    addChannel: (root, args) => {
+      const newChannel = { id: nextId++, name: args.name };
+      channels.push(newChannel);
+      pubsub.publish(CHANNEL_ADDED, {
+          [CHANNEL_ADDED]: args.name
+      });
+      return newChannel;
     },
-  },
-  Author: {
-    posts(author) {
-      return filter(posts, { authorId: author.id });
     },
-  },
+  Subscription: {
+    channelAdded: {
+        subscribe: () => pubsub.asyncIterator(CHANNEL_ADDED),
+    }
+  }
 };
           </code></pre>
         </section>
@@ -455,11 +511,6 @@ type Subscription {
             <div class="impl-logo fragment fade-in" data-fragment-index="1">
               <a href="http://sangria-graphql.org/"
                 ><img src="assets/img/scala-logo.svg"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="1">
-              <a href="http://sangria-graphql.org/"
-                ><img src="assets/img/sangria-logo.svg"
               /></a>
             </div>
             <div class="impl-logo fragment fade-in" data-fragment-index="2">
@@ -563,22 +614,22 @@ type Subscription {
         </section>
         <section>
           <p class="sm-font">Client Side: Getting Started</p>
-          <img src="assets/img/client1.png" class="sm-img" />
+          <img src="assets/img/index.png" class="sm-img" />
         </section>
         <section>
           <p class="sm-font">Query Snippet</p>
-          <img src="assets/img/client2.png" class="sm-img" />
+          <img src="assets/img/query.png" class="sm-img" />
         </section>
         <section>
           <p class="sm-font">Mutations Snippet</p>
-          <img src="assets/img/client3.png" class="sm-img" />
+          <img src="assets/img/mutations.png" class="sm-img" />
         </section>
         <section>
           <p class="sm-font">Server Side snippet</p>
           <img src="assets/img/code-sample.png" class="sm-img" />
         </section>
         <section>
-          <h2>Disadvanatges</h2>
+          <h2>Disadvantages</h2>
           <ul>
             <li class="fragment fade-in" data-fragment-index="1">
               Queries always return a HTTP status code of 200
