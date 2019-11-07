@@ -612,10 +612,259 @@ type Subscription {
             </li>
           </ul>
         </section>
+        <!-- Demo Section -->
         <section>
-          <p class="sm-font">Client Side: Getting Started</p>
-          <img src="assets/img/index.png" class="sm-img" />
+            <h2>
+              <a href="http://localhost:3000/" target="_blank">Demo Time</a>
+            </h2>
+          </section>
+        <!-- GraphQL Server (intro) -->
+        <section>
+          <h2>Writing a GraphQL Server...</h2>
+          <ol class="fragment fade-in" data-fragment-index="1" >
+            <li>Set up packages...</li>
+                <ol class="fragment fade-in" style="list-style-type: lower-alpha;">
+                    <li><a href="https://www.apollographql.com">apollo-server-express:</a> Apollo-Graphql over Express</li>
+                    <li><a href="">graphql-tools:</a> tools to create and manipulate GraphQL schemas.</li>
+                </ol>
+          </ol>
         </section>
+        <!-- GraphQL server Code - SCHEMA (types) -->
+        <section>
+            <h2>Defining the Schema...</h2>
+            <h3>Types</h3>
+            <pre>
+            <code data-trim contenteditable class="javascript">
+import { gql } from 'apollo-server-express';
+        
+const typeDefs = gql`        
+    type Message {
+        id: ID!
+        text: String
+    }
+
+    type Channel {
+      id: ID!                # "!" denotes a required field
+      name: String
+      messages: [Message]!   # "Composing" types is that easy!  
+    }
+
+            </code></pre>
+            <div style="color: #C0C0C0; float: right">
+                continued...
+            </div>
+        </br>
+        </section>
+
+        <!-- GraphQL server code - Query and Mutations -->
+        <section>
+            <h2>Defining the Schema...</h2>
+            <h3>Queries and Mutations</h3>
+            <pre>
+            <code data-trim contenteditable class="javascript">
+type Query {
+    channels: [Channel]    # "[]" means this is a list of channels
+    channel(id: ID!): Channel
+}
+
+type Mutation {
+    addChannel(name: String!): Channel,
+    removeChannel(name: String!): Channel,
+    updateChannel ...
+}
+            </code></pre>
+            <div style="color: #C0C0C0; float: right">
+                continued...
+            </div>
+        </br>
+        </section>
+
+        <!-- GraphQL server code - Subscriptions -->
+        <section>
+                <h2>Defining the Schema...</h2>
+                <h3>Subscriptions</h3>
+                <p style="font-size: smaller">Clients are notified about subscribed changes in near real time.</p>
+                <!-- <ul>
+                    <li>
+                        
+                    </li>
+                    <li>Next to zero boilerplate</li>
+                </ul> -->
+                <pre>
+                <code data-trim contenteditable class="javascript">
+const typeDefs = gql`
+    {types ...,}
+    {queries ...,}
+    {mutations ...,}
+
+    type Subscription {
+        channelAdded: Channel,
+        channelRemoved: Channel,
+        channelBanned: Channel,
+        ...
+    }
+`;
+export default typeDefs;
+
+
+                </code></pre>
+                <div style="color: #C0C0C0; float: right">
+                    continued...
+                </div>
+            </br>
+        </section>
+
+        <!-- GraphQL server code - Resolvers -->
+        <section>
+                <h2>Creating the Resolver.</h2>
+                <p style="font-size: smaller">Resolvers implement exactly "HOW" to get Data.</p>
+                <div style="display: flex; justify-content: center; align-items: flex-start;">
+                    <div style="font-size: smaller; width: 40%">
+                    <pre>
+                            <code data-trim contenteditable class="javascript">
+type Query {
+  channels: [Channel]
+  channel(id: ID!): Channel
+}        
+        
+                            </code>
+                        </pre>
+                    </div>
+                    <div style="font-size: smaller; width: 60%">
+                        <pre>
+                            <code data-trim contenteditable class="javascript">
+export const resolvers = {
+  Query: {
+    channels: () => {
+      return channels;
+    },
+    channel: (root, { id }) => {
+      return channels.find(
+          channel => channel.id == id
+      );
+    },
+  },   
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+                <div style="color: #C0C0C0; float: right">
+                    continued...
+                </div>
+        </section>
+
+        <!-- GraphQL server code - Resolvers -2 -->
+        <section>
+                <h2>Creating the Resolver.</h2>
+                <div style="display: flex; justify-content: center; align-items: flex-start;">
+                    <div style="font-size: smaller; width: 50%">
+                    <pre>
+                            <code data-trim contenteditable class="javascript">
+type Mutation {
+  addChannel(name: String!): Channel
+}
+        
+                            </code>
+                        </pre>
+                    </div>
+                    <div style="font-size: smaller; width: 50%">
+                        <pre>
+                            <code data-trim contenteditable class="javascript">
+Mutation: {
+    addChannel: (root, args) => {
+        const newChannel = { 
+            id: nextId++, 
+            name: args.name 
+        };
+        channels.push(newChannel);
+        return newChannel;
+    },
+},   
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+                <div style="color: #C0C0C0; float: right">
+                    continued...
+                </div>
+        </section>
+
+        <!-- GraphQL server code - Resolvers -3 -->
+        <section>
+                <h2>Creating the Resolver.</h2>
+                <p style="font-size: smaller">Subscriptions work on Pub-Sub.</p>
+                <div style="display: flex; justify-content: center; align-items: flex-start;">
+                    <div style="font-size: smaller; width: 40%">
+                    <pre>
+                            <code data-trim contenteditable class="javascript">
+type Subscription {
+    channelAdded: Channel
+}
+                            </code>
+                        </pre>
+                    </div>
+                    <div style="font-size: smaller; width: 60%">
+                        <pre>
+                            <code data-trim contenteditable class="javascript">
+import { PubSub } from 'apollo-server-express';
+const pubsub = new PubSub();
+const CHANNEL_ADDED = 'CHANNEL_ADDED';
+
+Mutation: {
+    addChannel: (root, args) => {
+      const newChannel = {
+          id: nextId++,
+          name: args.name 
+        };
+      channels.push(newChannel);
+      // Publish the event with new channel data
+      pubsub.publish(CHANNEL_ADDED, {
+          channelAdded: args
+      });
+      return newChannel;
+    },
+  },
+                                       
+                            </code>
+                        </pre>
+                    </div>
+                </div>
+                <div style="color: #C0C0C0; float: right">
+                    continued...
+                </div>
+        </section>
+
+        <!-- GraphQL server code - Tying it together. -->
+        <section>
+                <h2>Tying everything together...</h2>
+                <pre>
+                    <code data-trim contenteditable class="javascript">
+// Create the Server
+const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+});
+
+// The `listen` method launches a web server.
+server.listen().then(({ url }) => {
+  console.log(`🚀 Server ready at ${url}`);
+});
+                    </code>
+                </pre>
+        
+        </section>
+
+        <!-- GraphQL Client -->
+        <section>
+            <h2>GraphQL Client</h2>
+            <p style="float:left;clear:right">Set up packages..</p>
+            <ol>
+                <li><a href="#">apollo-boost:</a> Package containing everything you need to set up Apollo Client</li>
+                <li><a href="#">@apollo/react-hooks:</a> React hooks based view layer integration</li>
+                <li><a href="#">graphql:</a> Parses GraphQL queries</li>
+            </ol>
+        </section>
+
         <section>
           <p class="sm-font">Query Snippet</p>
           <img src="assets/img/query.png" class="sm-img" />
@@ -694,11 +943,6 @@ type Subscription {
             >
           </h2>
         </section> -->
-        <section>
-          <h2>
-            <a href="http://localhost:3000/" target="_blank">Demo Time</a>
-          </h2>
-        </section>
         <section data-background="#D45CA2" class="first-slide">
           <h1>Thank you!</h1>
           <br />
