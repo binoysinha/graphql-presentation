@@ -69,14 +69,34 @@
       <div class="slides">
         <section data-background="#D45CA2" class="first-slide">
           <img src="assets/img/graphql-white.svg" class="logo-image" />
-
           <p style="text-align: center" class="title-font">
             <strong>GraphQL</strong> for Frontend
           </p>
-
-          <p style="font-size: 70%; opacity: 0.5" class="normal-font">
-            by Binoy Sinha and Nishant Gupta
-          </p>
+        </section>
+        <section>
+            <h2>Who are we?</h2>
+          <div class="pr-info">
+            <div>
+              <p>Binoy Sinha</p>
+              <ul>
+                <li>FEE-2</li>
+                <li>India-AdTech</li>
+                <li>sinbinoy@</li>
+              </ul>
+            </div>
+            <div>
+              <p>Nishant Gupta</p>
+              <ul>
+                <li>FEE-2</li>
+                <li>India-AdTech</li>
+                <li>nishangu@</li>
+              </ul>
+            </div>
+          </div>
+         
+        </section>
+        <section>
+          <h2>A bit of HISTORY!!!</h2>
         </section>
         <section>
           <h2>GraphQL</h2>
@@ -196,9 +216,6 @@
         <section>
           <h2>Core Concepts</h2>
           <ul>
-            <li>
-              The Schema Definition Language (SDL)
-            </li>
             <li class="fragment fade-in" data-fragment-index="1">
               Fetching Data with Queries
             </li>
@@ -216,7 +233,7 @@
             </li>
           </ul>
         </section>
-        <section>
+        <!-- <section>
           <h2>Type System</h2>
           <pre
             style="float: left; width: 60%"
@@ -259,9 +276,52 @@
     channelAdded(name: String!): Channel
   }
             </code></pre>
-        </section>
+        </section> -->
         <section>
           <h2>Queries</h2>
+          <ul>
+            <li class="fragment fade-in" data-fragment-index="1">
+              Every GraphQL query goes through three phases.
+            </li>
+            <li class="fragment fade-in" data-fragment-index="2">
+              <strong>Parsing</strong> — A query is parsed into an abstract syntax tree (or AST). 
+            </li>
+            <li class="fragment fade-in" data-fragment-index="3">
+              <strong>Validation</strong> — The AST is validated against the schema. Checks for correct query syntax and if the fields exist.
+            </li>
+            <li class="fragment fade-in" data-fragment-index="4">
+              <strong>Execution</strong> — The runtime walks through the AST, starting from the root of the tree, invokes resolvers, collects up results, and emits JSON.
+            </li>
+          </ul>
+        </section>
+        <section>
+          <h2>AST</h2>
+          <pre
+            style="float: left; width: 50%"
+          ><code data-trim contenteditable class="javascript">
+query {
+  user {
+    name {
+    email  
+    }
+  }
+  album {
+    title
+  }
+}
+          </code></pre>
+
+          <pre
+            style="float: left; width: 50%"
+            class="fragment fade-in"
+            data-fragment-index="1"
+          >
+          <img src="assets/img/query_astd.png" class="sm-img" />
+
+        </pre>
+        </section>
+        <section>
+          <h2>Nested Queries</h2>
           <pre
             style="float: left; width: 50%"
           ><code data-trim contenteditable class="javascript">
@@ -329,7 +389,7 @@ query {
               style="float: left; width: 50%"
             ><code data-trim contenteditable class="javascript">
 mutation {
-  createPerson(name: "Bob", age: 36) {
+  createUser(name: "Bob", age: 36) {
     name
     age
   }
@@ -343,7 +403,7 @@ mutation {
             ><code data-trim contenteditable class="javascript">
 {
           "data": {
-            "createPerson": {
+            "createUser": {
               "name": "Bob",
               "age": 36
             }
@@ -353,76 +413,16 @@ mutation {
           </div>
         </section>
         <section>
-          <h2>Subscriptions</h2>
-          <ul>
-            <li>
-              It represent a stream of data sent over to the client.
-            </li>
-            <li class="fragment fade-in" data-fragment-index="1">
-              Have same syntax as queries and mutations
-            </li>
-            <li class="fragment fade-in" data-fragment-index="2">
-              Similar to WebSocket, long polling, sse events in REST world
-            </li>
-          </ul>
-          <pre
-            class="fragment fade-in"
-            data-fragment-index="3"
-          ><code data-trim contenteditable class="javascript">
-subscription ProductEvents {
-  channelAdded(name: 'Sony') { channel }
-}
-          </code></pre>
-        </section>
-        <section>
           <h2>Resolvers</h2>
           <ul>
             <li>
-              It is a collection of functions that generate response for a
-              GraphQL query.
+              It is a function that resolves a value for a type or field in a schema
             </li>
             <li class="fragment fade-in" data-fragment-index="1">
-              fieldName:(root, args, context, info) => { result }
+              Can return objects or scalars like Strings, Numbers, Booleans, etc.
             </li>
             <li class="fragment fade-in" data-fragment-index="2">
-              It accepts four positional arguments.
-            </li>
-            <li class="fragment fade-in" data-fragment-index="3">
-              root
-              <ul class="fragment fade-in" data-fragment-index="4">
-                <li>
-                  The object that contains the result returned from the resolver
-                  on the parent field.
-                </li>
-              </ul>
-            </li>
-            <li class="fragment fade-in" data-fragment-index="5">
-              args
-              <ul class="fragment fade-in" data-fragment-index="6">
-                <li>
-                  An object with the arguments passed into the field in the
-                  query.
-                </li>
-              </ul>
-            </li>
-            <li class="fragment fade-in" data-fragment-index="7">
-              context
-              <ul class="fragment fade-in" data-fragment-index="8">
-                <li>
-                  This is an object shared by all resolvers in a particular
-                  query.
-                </li>
-              </ul>
-            </li>
-            <li class="fragment fade-in" data-fragment-index="9">
-              info
-              <ul class="fragment fade-in" data-fragment-index="10">
-                <li>
-                  It contains information about the execution state of the
-                  query, including the field name, path to the field from the
-                  root.
-                </li>
-              </ul>
+              Resolvers can be asynchronous too.
             </li>
           </ul>
         </section>
@@ -431,31 +431,45 @@ subscription ProductEvents {
           <pre><code data-trim contenteditable class="javascript">
 export const resolvers = {
   Query: {
-    channels: () => {
-      return channels;
+    User: () => {
+      return user;
     },
-    channel: (root, { id }) => {
-      return channels.find(channel => channel.id == id);
+    album: async (root, { id }) => {
+      return await albums.find(album => album.id == id);
     },
   },
   Mutation: {
-    addChannel: (root, args) => {
-      const newChannel = { id: nextId++, name: args.name };
-      channels.push(newChannel);
-      pubsub.publish(CHANNEL_ADDED, {
-          [CHANNEL_ADDED]: args.name
-      });
-      return newChannel;
+    createUser: (root, args) => {
+      const newUser = { name: args.name, age: args.age, };
+      Users.push(newUser);
+      return newUser;
     },
-    },
-  Subscription: {
-    channelAdded: {
-        subscribe: () => pubsub.asyncIterator(CHANNEL_ADDED),
-    }
   }
 };
           </code></pre>
         </section>
+        <section>
+            <h2>Subscriptions</h2>
+            <ul>
+              <li>
+                It represent a stream of data sent over to the client.
+              </li>
+              <li class="fragment fade-in" data-fragment-index="1">
+                Have same syntax as queries and mutations
+              </li>
+              <li class="fragment fade-in" data-fragment-index="2">
+                Similar to WebSocket, long polling, sse events in REST world
+              </li>
+            </ul>
+            <pre
+              class="fragment fade-in"
+              data-fragment-index="3"
+            ><code data-trim contenteditable class="javascript">
+  subscription ProductEvents {
+    channelAdded(name: 'Sony') { channel }
+  }
+            </code></pre>
+          </section>
         <section>
           <h2>Defining a Schema</h2>
           <div>
@@ -489,88 +503,6 @@ type Subscription {
           <img src="assets/img/data-requirements.svg" />
         </section> -->
         <section>
-          <h2>Backend Agnostic</h2>
-
-          <img src="assets/img/app-layers.svg" style="width: 75%" />
-        </section>
-
-        <section>
-          <h2>Languages</h2>
-
-          <div class="logos">
-            <div class="impl-logo">
-              <a href="https://github.com/graphql/graphql-js/"
-                ><img src="assets/img/js-logo.svg"
-              /></a>
-            </div>
-            <div class="impl-logo">
-              <a href="https://github.com/graphql/graphql-js/"
-                ><img src="assets/img/node-logo.svg"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="1">
-              <a href="http://sangria-graphql.org/"
-                ><img src="assets/img/scala-logo.svg"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="2">
-              <a href="https://github.com/graphql-java/graphql-java"
-                ><img src="assets/img/java-logo.svg"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="3">
-              <a href="http://graphene-python.org/"
-                ><img src="assets/img/python-logo.svg"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="3">
-              <a href="http://graphene-python.org/"
-                ><img src="assets/img/graphene.png"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="4">
-              <a href="https://github.com/rmosolgo/graphql-ruby"
-                ><img src="assets/img/ruby_logo.svg"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="5">
-              <a href="https://github.com/graphql-elixir/graphql"
-                ><img src="assets/img/elixir-logo.png"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="6">
-              <a href="https://github.com/jdnavarro/graphql-haskell"
-                ><img src="assets/img/haskell-logo.svg"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="6">
-              <a href="https://github.com/graphql-go/graphql"
-                ><img src="assets/img/gopher.svg"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="6">
-              <a href="https://github.com/bjornbytes/graphql-lua"
-                ><img src="assets/img/lua-logo.svg"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="6">
-              <a href="https://github.com/webonyx/graphql-php"
-                ><img src="assets/img/php_logo.png"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="6">
-              <a href="https://github.com/graphql/libgraphqlparser"
-                ><img src="assets/img/c-logo.svg"
-              /></a>
-            </div>
-            <div class="impl-logo fragment fade-in" data-fragment-index="6">
-              <a href="https://github.com/graphql-dotnet/graphql-dotnet"
-                ><img src="assets/img/csharp-logo.png"
-              /></a>
-            </div>
-          </div>
-        </section>
-        <section>
           <h2>Client Ecosystems</h2>
           <ul>
             <li class="fragment fade-in" data-fragment-index="1">
@@ -590,6 +522,7 @@ type Subscription {
         </section>
         <section>
           <h2>Frameworks</h2>
+          <div class="pr-info">
           <ul>
             <li>
               Client Side
@@ -611,6 +544,17 @@ type Subscription {
               </ul>
             </li>
           </ul>
+          <ul>
+            <li class="fragment fade-in" data-fragment-index="4">
+              Amazon Ecosystem
+              <ul>
+                <li>AWS Amplify</li>
+                <li>AWS AppSync</li>
+                <li>Amazon GQL</li>
+              </ul>
+            </li>
+          </ul>
+          </div>
         </section>
         <!-- Demo Section -->
         <section>
@@ -876,6 +820,88 @@ server.listen().then(({ url }) => {
         <section>
           <p class="sm-font">Server Side snippet</p>
           <img src="assets/img/code-sample.png" class="sm-img" />
+        </section>
+        <section>
+          <h2>Backend Agnostic</h2>
+
+          <img src="assets/img/app-layers.svg" style="width: 75%" />
+        </section>
+
+        <section>
+          <h2>Languages</h2>
+
+          <div class="logos">
+            <div class="impl-logo">
+              <a href="https://github.com/graphql/graphql-js/"
+                ><img src="assets/img/js-logo.svg"
+              /></a>
+            </div>
+            <div class="impl-logo">
+              <a href="https://github.com/graphql/graphql-js/"
+                ><img src="assets/img/node-logo.svg"
+              /></a>
+            </div>
+            <div class="impl-logo fragment fade-in" data-fragment-index="1">
+              <a href="http://sangria-graphql.org/"
+                ><img src="assets/img/scala-logo.svg"
+              /></a>
+            </div>
+            <div class="impl-logo fragment fade-in" data-fragment-index="2">
+              <a href="https://github.com/graphql-java/graphql-java"
+                ><img src="assets/img/java-logo.svg"
+              /></a>
+            </div>
+            <div class="impl-logo fragment fade-in" data-fragment-index="3">
+              <a href="http://graphene-python.org/"
+                ><img src="assets/img/python-logo.svg"
+              /></a>
+            </div>
+            <div class="impl-logo fragment fade-in" data-fragment-index="3">
+              <a href="http://graphene-python.org/"
+                ><img src="assets/img/graphene.png"
+              /></a>
+            </div>
+            <div class="impl-logo fragment fade-in" data-fragment-index="4">
+              <a href="https://github.com/rmosolgo/graphql-ruby"
+                ><img src="assets/img/ruby_logo.svg"
+              /></a>
+            </div>
+            <div class="impl-logo fragment fade-in" data-fragment-index="5">
+              <a href="https://github.com/graphql-elixir/graphql"
+                ><img src="assets/img/elixir-logo.png"
+              /></a>
+            </div>
+            <div class="impl-logo fragment fade-in" data-fragment-index="6">
+              <a href="https://github.com/jdnavarro/graphql-haskell"
+                ><img src="assets/img/haskell-logo.svg"
+              /></a>
+            </div>
+            <div class="impl-logo fragment fade-in" data-fragment-index="6">
+              <a href="https://github.com/graphql-go/graphql"
+                ><img src="assets/img/gopher.svg"
+              /></a>
+            </div>
+            <div class="impl-logo fragment fade-in" data-fragment-index="6">
+              <a href="https://github.com/bjornbytes/graphql-lua"
+                ><img src="assets/img/lua-logo.svg"
+              /></a>
+            </div>
+            <div class="impl-logo fragment fade-in" data-fragment-index="6">
+              <a href="https://github.com/webonyx/graphql-php"
+                ><img src="assets/img/php_logo.png"
+              /></a>
+            </div>
+            <div class="impl-logo fragment fade-in" data-fragment-index="6">
+              <a href="https://github.com/graphql/libgraphqlparser"
+                ><img src="assets/img/c-logo.svg"
+              /></a>
+            </div>
+            <div class="impl-logo fragment fade-in" data-fragment-index="6">
+              <a href="https://github.com/graphql-dotnet/graphql-dotnet"
+                ><img src="assets/img/csharp-logo.png"
+              /></a>
+            </div>
+          </div>
         </section>
         <section>
           <h2>Disadvantages</h2>
