@@ -176,3 +176,12 @@ iframe.graphiql {
 .sm-img {
   width: 80%;
 }
+
+.pr-info {
+  display: flex;
+  justify-content: space-between;
+}
+
+.pr-info p {
+  font-weight: bold !important;
+}
