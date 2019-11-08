@@ -109,7 +109,7 @@
           <h2>More...</h2>
           <ul>
             <li>
-              It's a declarative data fetching
+              Focuses on fetching data Declaratively.
             </li>
             <li class="fragment fade-in" data-fragment-index="1">
               Unlike REST, GraphQL server only exposes a single endpoint.
@@ -650,9 +650,6 @@ const typeDefs = gql`
     }
 
             </code></pre>
-            <div style="color: #C0C0C0; float: right">
-                continued...
-            </div>
         </br>
         </section>
 
@@ -673,9 +670,6 @@ type Mutation {
     updateChannel ...
 }
             </code></pre>
-            <div style="color: #C0C0C0; float: right">
-                continued...
-            </div>
         </br>
         </section>
 
@@ -708,9 +702,6 @@ export default typeDefs;
 
 
                 </code></pre>
-                <div style="color: #C0C0C0; float: right">
-                    continued...
-                </div>
             </br>
         </section>
 
@@ -719,7 +710,7 @@ export default typeDefs;
                 <h2>Creating the Resolver.</h2>
                 <p style="font-size: smaller">Resolvers implement exactly "HOW" to get Data.</p>
                 <div style="display: flex; justify-content: center; align-items: flex-start;">
-                    <div style="font-size: smaller; width: 40%">
+                    <div style="width: 40%">
                     <pre>
                             <code data-trim contenteditable class="javascript">
 type Query {
@@ -730,7 +721,7 @@ type Query {
                             </code>
                         </pre>
                     </div>
-                    <div style="font-size: smaller; width: 60%">
+                    <div style="width: 60%">
                         <pre>
                             <code data-trim contenteditable class="javascript">
 export const resolvers = {
@@ -748,16 +739,14 @@ export const resolvers = {
                         </pre>
                     </div>
                 </div>
-                <div style="color: #C0C0C0; float: right">
-                    continued...
-                </div>
         </section>
 
         <!-- GraphQL server code - Resolvers -2 -->
         <section>
                 <h2>Creating the Resolver.</h2>
-                <div style="display: flex; justify-content: center; align-items: flex-start;">
-                    <div style="font-size: smaller; width: 50%">
+                <h3>Mutation Resolvers</h3>
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="width: 50%; font-size: smaller;">
                     <pre>
                             <code data-trim contenteditable class="javascript">
 type Mutation {
@@ -767,7 +756,7 @@ type Mutation {
                             </code>
                         </pre>
                     </div>
-                    <div style="font-size: smaller; width: 50%">
+                    <div style="width: 50%">
                         <pre>
                             <code data-trim contenteditable class="javascript">
 Mutation: {
@@ -784,9 +773,6 @@ Mutation: {
                         </pre>
                     </div>
                 </div>
-                <div style="color: #C0C0C0; float: right">
-                    continued...
-                </div>
         </section>
 
         <!-- GraphQL server code - Resolvers -3 -->
@@ -794,7 +780,7 @@ Mutation: {
                 <h2>Creating the Resolver.</h2>
                 <p style="font-size: smaller">Subscriptions work on Pub-Sub.</p>
                 <div style="display: flex; justify-content: center; align-items: flex-start;">
-                    <div style="font-size: smaller; width: 40%">
+                    <div style="width: 40%">
                     <pre>
                             <code data-trim contenteditable class="javascript">
 type Subscription {
@@ -803,10 +789,13 @@ type Subscription {
                             </code>
                         </pre>
                     </div>
-                    <div style="font-size: smaller; width: 60%">
+                    <div style="width: 60%">
                         <pre>
                             <code data-trim contenteditable class="javascript">
-import { PubSub } from 'apollo-server-express';
+import { 
+    PubSub 
+} from 'apollo-server-express';
+
 const pubsub = new PubSub();
 const CHANNEL_ADDED = 'CHANNEL_ADDED';
 
@@ -817,7 +806,7 @@ Mutation: {
           name: args.name 
         };
       channels.push(newChannel);
-      // Publish the event with new channel data
+      // Publish new channel data
       pubsub.publish(CHANNEL_ADDED, {
           channelAdded: args
       });
@@ -829,14 +818,14 @@ Mutation: {
                         </pre>
                     </div>
                 </div>
-                <div style="color: #C0C0C0; float: right">
-                    continued...
-                </div>
         </section>
 
         <!-- GraphQL server code - Tying it together. -->
         <section>
                 <h2>Tying everything together...</h2>
+                <p style="float: left; clear: both">
+                    Create the "ApolloServer" by specifying Types and Resolvers and start it up !
+                </p>
                 <pre>
                     <code data-trim contenteditable class="javascript">
 // Create the Server
@@ -856,27 +845,231 @@ server.listen().then(({ url }) => {
 
         <!-- GraphQL Client -->
         <section>
-            <h2>GraphQL Client</h2>
-            <p style="float:left;clear:right">Set up packages..</p>
-            <ol>
+            <h2>Writing a GraphQL Client...</h2>
+            <p class="fragment fade-in" data-fragment-index="1" style="float:left;clear:right">Set up packages..</p>
+            <ol class="fragment fade-in" data-fragment-index="2">
                 <li><a href="#">apollo-boost:</a> Package containing everything you need to set up Apollo Client</li>
                 <li><a href="#">@apollo/react-hooks:</a> React hooks based view layer integration</li>
                 <li><a href="#">graphql:</a> Parses GraphQL queries</li>
             </ol>
         </section>
 
+        <!-- GraphQL Client: Connecting to the GraphQL server -->
         <section>
-          <p class="sm-font">Query Snippet</p>
-          <img src="assets/img/query.png" class="sm-img" />
+                <h2>Create a Simple Client...</h2>
+                <pre>
+                        <code data-trim contenteditable class="react">
+import ApolloClient from 'apollo-boost';
+import { ApolloProvider } from '@apollo/react-hooks';
+
+const client = new ApolloClient({
+    uri: 'http://localhost:7800',  // URL of your GraphQL server.
+});
+</code>
+<code strong>
+// Wrap your App inside ApolloProvider
+// and specify the client we just created.
+ReactDOM.render(
+    <ApolloProvider client={client}>
+        <App />, 
+    </ApolloProvider>,
+document.getElementById('root'));
+                        </code>
+                    </pre>
         </section>
+
+        <!-- GraphQL Client: A non-trivial client -->
+        <!-- <section>
+                <h2>Configure client for Subscriptions</h2>
+                <p style="font-size:smaller">Configure your client to point to your GraphQL subscriptions endpoint.</p>
+                <pre>
+                    <code data-trim contenteditable class="javascript">
+const wsLink = new WebSocketLink({
+    uri: 'ws:&ltmy awesome grapql server url&gt/subscriptions',
+    options: {
+        reconnect: true
+    }
+});
+                    </code>
+                </pre>
+
+        </section> -->
+
+        <!-- GraphQL Client: Creating a React Component which queries graphQL. -->
         <section>
-          <p class="sm-font">Mutations Snippet</p>
-          <img src="assets/img/mutations.png" class="sm-img" />
+            <h2>Creating the Channel List Component.</h2>
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <div style="font-size: smaller; width: 40%">
+                    <img src="/assets/img/channel-list-component.png" alt="channel-list" srcset="">
+                </div>
+                <div style="font-size: smaller; width: 60%">
+                    <pre>
+                        <code data-trim contenteditable class="javascript">
+import React from 'react';
+
+const ChannelsList = () => {
+    // we will see where "data" comes from
+    return <ul>
+        {data.channels.map(
+            channel => (
+                <li key={channel.id}>
+                    {channel.name}
+                </li>
+            )
+        )}
+        </ul>;
+}
+                        </code>
+                    </pre>
+                </div>
+            </div>
         </section>
+
+        <!-- GraphQL Client: Running a Query inside our component -->
         <section>
-          <p class="sm-font">Server Side snippet</p>
-          <img src="assets/img/code-sample.png" class="sm-img" />
+            <h2>Integrating GraphQL with React View</h2>
+            <p class="sm-font" style="float: left; font-size: smaller">GraphQL integration with View Layer can be done Two ways in React.</p>
+            <ol>
+                <li>Use Hooks provided by <a href="#">@apollo/react-hooks</a></li>
+                <li>Use HOCs provided by <a href="#">@apollo/react-hoc</a></li>
+            </ol>
+            <p class="sm-font" style="float: left; font-size: smaller">We will proceed with the Hooks Implementation.</p>
         </section>
+
+        <!-- GraphQL Client: useQuery Hook -->
+        <section>
+                <h2>Querying All Channels</h2>
+                    <pre>
+                        <code data-trim contenteditable class="javascript">
+import { gql } from 'apollo-boost';
+import { useQuery } from '@apollo/react-hooks';
+
+// define the Query.
+const CHANNELS_LIST_QUERY = gql`
+    query ChannelListQuery {
+        channels {          // Schema has a query called "channels"
+            id
+            name
+        }
+    }
+`;
+const ChannelsList = () => {
+// the "useQuery" Hook runs the query and outputs data.
+const { loading, error, data } = useQuery(CHANNELS_LIST_QUERY);
+
+return (<StyledList>
+    {data.channels.map(
+        channel => (
+            <li key={channel.id}>
+                {channel.name}
+            </li>
+        )
+    )}
+</StyledList>);
+}
+                        </code>
+                    </pre>
+        </section>
+        
+        <!-- GraphQL Client: useMutation Hook -->
+        <section>
+                <h2>Adding a New Channel</h2>
+                    <pre>
+                        <code data-trim contenteditable class="react">
+import { useMutation } from '@apollo/react-hooks';
+
+// Mutation for creating a new channel
+const CREATE_CHANNEL_MUTATION = gql`
+    mutation addChannel($name: String!) {
+    addChannel(name: $name) {
+        id
+        name
+    }
+}`;
+
+// Component
+const CreateChannel = () => {
+    const [addChannel] = useMutation(CREATE_CHANNEL_MUTATION);
+    
+    // event handler
+    const handleKeyUp = evt => {
+        if (evt.keyCode === 13) {   //Enter key
+            addChannel({
+                variables: { name: evt.target.value }
+            })
+        }
+    };
+
+    return <input onKeyUp={handleKeyUp} />
+};
+                    </code>
+                </pre>
+        </section>
+
+        <!-- GraphQL Client: useSubscription Hook -->
+        <section>
+                <h2>Subscribing to Events...</h2>
+                <pre>
+                        <code data-trim contenteditable class="javascript">
+import { useSubscription } from '@apollo/react-hooks';
+
+const CHANNELS_SUBSCRIPTION = gql`
+    subscription channelAdded {
+        channelAdded {
+            id
+            name
+        }
+}`;
+
+const Notification = () => {
+    const { data, loading, error } = useSubscription(
+        CHANNELS_SUBSCRIPTION
+    );
+    return (
+        <div>
+            {
+                !loading 
+                && 
+                <h3>A new Channel-
+                    {data.channelAdded.name}
+                    was Added.
+                </h3> 
+            }
+        </div>
+    )
+}                           
+                    </code>
+                </pre>
+        </section>
+
+        <!-- GraphQL Disclaimers -->
+        <section>
+            <h2>What did we just do?</h2>
+            <ol class="fragment fade-in" data-fragment-index="1">
+                <li class="fragment fade-in" data-fragment-index="2">Created a GraphQL server using apollo-server.</li>
+                <li class="fragment fade-in" data-fragment-index="3">Integrated server with React Views using apollo-client</li>
+                <li class="fragment fade-in" data-fragment-index="4">Learned a whole lot of Jargon to make ourselves sound cool !</li>
+            </ol>
+        </section>
+
+        <!-- GraphQL Disclaimers-2 -->
+        <section>
+            <h2>What we didn't discuss ?</h2>
+            <ol class="fragment fade-in" data-fragment-index="0">
+                <li class="fragment fade-in" data-fragment-index="1">Configure server WebSocket for Subscriptions.</li>
+                <li class="fragment fade-in" data-fragment-index="2">Configure client link for Subscriptions</li>
+                <li class="fragment fade-in" data-fragment-index="3">Some other gory implementation details.</li>                    
+            </ol>
+        </section>
+
+        <!-- Meme -->
+        <section>
+            <h2>This is when you realize...</h2>
+            <img width="500px" height="500px" class="fragment fade-in" data-fragment-index="5" src="/assets/img/neo-graphql.jpg" alt="" />
+        </section>
+
+
+
         <section>
           <h2>Disadvantages</h2>
           <ul>
@@ -934,17 +1127,8 @@ server.listen().then(({ url }) => {
             </li>
           </ul>
         </section>
-        <!-- <section>
-          <h2>
-            <a
-              href="https://graphql-example.herokuapp.com/graphiql"
-              target="_blank"
-              >GraphiQL</a
-            >
-          </h2>
-        </section> -->
         <section data-background="#D45CA2" class="first-slide">
-          <h1>Thank you!</h1>
+          <h1>Resources</h1>
           <br />
           <ul class="fragment roll-in" data-fragment-index="2">
             <li>
@@ -973,16 +1157,38 @@ server.listen().then(({ url }) => {
                 >http://bit.ly/zero-to-graphql</a
               >
             </li>
+            <li>
+                <strong>Server Code.</strong>
+                <a href="https://github.com/ccsCoder/SimpleMockGraphQLServer" target="_blank"
+                    >Server Implementation</a
+                >
+            </li>
+            <li>
+                <strong>Zero To GraphQL:</strong>
+                <a href="https://github.com/ccsCoder/channel-list-react-apollo" target="_blank"
+                    >Client Implementation.</a
+                >
+            </li>
+            <li>
+                <strong>Reach us at: </strong>
+                <a href="#" target="_blank"
+                    >@nishangu, @sinbinoy</a
+                >
+            </li>
           </ul>
-          <br /><br />
-          <h2
-            class="fragment roll-in"
-            data-fragment-index="3"
-            style="opacity: 0.7;"
-          >
-            Questions?
-          </h2>
         </section>
+        
+        <section>
+            <img src="/assets/img/end.jpg" height="500px" width="700px" alt="" />
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+            <br/>
+
+            <h2>Thank you !</h2>
+        </section>
+
       </div>
     </div>
 
